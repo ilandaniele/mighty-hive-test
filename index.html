@@ -1,0 +1,56 @@
+  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mighty Hive Test</title>
+</head>
+<body>
+    <div class="">
+      <label>Insert a key:</label>
+      <input type="text" id="key1" name="key1" required>
+      <label>Insert a value:</label>
+      <input type="text" id="value" name="value" required>
+      <button onclick="addKeyValue()">Add</button>
+    </div>
+    <div class="">
+      <label for="">Insert a key to obtain it's value:</label>
+      <input type="text" id="key2" name="key2" required>
+      <button onclick="getValue(key)">Get</button>
+      <label for="result"></label>
+      
+    </div>
+</body>
+<script>
+    // Create WebSocket connection.
+    const socket = new WebSocket('ws://localhost:8080');
+
+    // Connection opened
+    socket.addEventListener('open', function (event) {
+        console.log('Connected to WS Server')
+    });
+
+    // Listen for messages
+    socket.addEventListener('message', function (event) {
+        console.log('Message from server ', event.data);
+    });
+
+    const addKeyValue = () => {
+
+      var k = document.getElementById("key1").value;
+      var v = document.getElementById("value").value;
+      const pair = {key: k, value: v};  
+      console.log(pair);
+      socket.send(JSON.stringify({key:k, value:v}));
+      console.log('hola');
+    }
+
+    const getValue = (key) =>{
+      socket.send(key);
+      // if(error){
+      //   //get from BD
+      // }
+    }
+</script>
+</html>
