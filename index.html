@@ -8,6 +8,11 @@
 </head>
 <body>
     <div class="main-text" style="font-size:20px; text-align:center; margin: 20px 0px 40px 0px;">Mighty Hive Test</div>
+    
+    <div class="websocket" style="margin-bottom:30px; display:flex; flex-direction:column; align-items: center;">
+      <label id="websocket-state"></label>
+      <button onclick="connect()">Connect</button>
+    </div>
     <div class="column" style="margin-bottom:30px; display:flex; flex-direction:column; align-items: center;">
       <label>Insert a key:</label>
       <input type="text" id="key1" name="key1" required style="margin-bottom:10px;">
@@ -25,46 +30,26 @@
 </body>
 <script>
     // Create WebSocket connection.
-    const socket = new WebSocket('ws://localhost:8080');
+    var socket = new WebSocket('ws://localhost:8080');
     var connected = false;
-    // socket.onopen = function(evt) { onOpen(evt) }; 
-    // socket.onclose = function(evt) { onClose(evt) }; 
-    // socket.onmessage = function(evt) { onMessage(evt) }; 
-    // socket.onerror = function(evt) { onError(evt) }; 
-    // Connection opened
-    socket.addEventListener('open', function (event) {
-        console.log('Connected to WebSocket Server');
-        connected = true;
-    });
 
-    // Listen for messages
-    socket.addEventListener('message', function (event) {
-      var value = JSON.parse(event.data).value;
-      if(JSON.parse(event.data).value){
-        document.getElementById("result2").innerText = "Value: "+value;
+    const connect = () =>{
+      if(connected){
+        document.getElementById("websocket-state").innerText = "Socket already connected";
       }else{
-        console.log(JSON.parse(event.data));
-      }
-    });
+        try{
+          socket = new WebSocket('ws://localhost:8080');
+        }catch(e){
+          console.log(e);
+        }
+        
+        document.getElementById("websocket-state").innerText = "Socket has connected";
+        connected = true;
+      } 
+    }
 
-    // ws.addEventListener("error", e => {
-    //   // readyState === 3 is CLOSED
-    //   if (e.target.readyState === 3) {
-    //     this.connectionTries--;
 
-    //     if (this.connectionTries > 0) {
-    //       setTimeout(() => this.connect(url), 5000);
-    //     } else {
-    //       throw new Error("Maximum number of connection trials has been reached");
-    //     }
-
-    //   }
-    // });
-    socket.addEventListener('error', function (event){
-      if (e.target.readyState === 3) {
-        connected = false;
-      }
-    });
+    
 
     const addKeyValue = () => {
       var k = document.getElementById("key1").value;
@@ -76,8 +61,14 @@
 
     const getValue = (key) => {
       var k = document.getElementById("key2").value;
-      socket.send(JSON.stringify({key:k}));
+      try {
+        socket.send(JSON.stringify({key:k}));
+      }catch(e){
+        console.log(e);
+      }
     }
+
+    
 
 </script>
 </html>
