@@ -1,26 +1,10 @@
 
 var socket = new WebSocket('ws://localhost:8080');
-var connected = true;
 
-// var reconnectInterval = 60000;
-
-// var connect = function(){
-//   socket = new WebSocket('ws://localhost:8080');
-//   socket.on('open', function() {
-//       console.log('socket open');
-//   });
-//   socket.on('error', function() {
-//       console.log('socket error');
-//   });
-//   socket.on('close', function() {
-//       console.log('socket close');
-//       setTimeout(connect, reconnectInterval);
-//   });
-// };
-// connect();
-
-// Listen for messages
-socket.addEventListener('message',function incoming(event) {
+/*
+ * Socket messages listener
+ */ 
+const socketMessageListener = (event) => {
   var pair = JSON.parse(event.data);
   if(pair.value && pair.key){
     var result = "Key: '"+k+"' and value: '"+v+"' successfully added";
@@ -35,37 +19,55 @@ socket.addEventListener('message',function incoming(event) {
     }
     
   }
-});
+}
 
-// Connection opened
-socket.addEventListener('open', function (event) {
+/*
+ * Socket connection opened listener
+ */
+const socketOpenListener = (event) =>{
   if(!socket){
     socket = new WebSocket('ws://localhost:8080');
   }
   console.log('Connected to WebSocket Server');
-  connected = true;
+
   var html = `<div style="color: green">${'SOCKET CONNECTED'}</div>`;
   document.getElementById('socket-state').innerHTML = html;
-});
+};
 
-// Socket connection closed
-socket.addEventListener('close', (event) => {
+/*
+ * Socket connection closed listener
+ */
+const socketCloseListener = (event) => {
   console.log('The connection has been closed.');
-  connected = false;
+
   var html = `<div style="color: red">${'SOCKET DISCONNECTED'}</div>`;
   document.getElementById('socket-state').innerHTML = html;
   socket.close();
 
-});
+  socket = new WebSocket('ws://localhost:8080');
+  socket.addEventListener('open', socketOpenListener);
+  socket.addEventListener('message', socketMessageListener);
+  socket.addEventListener('close', socketCloseListener);
+}
 
-// Socket error
-socket.addEventListener('error', function (event){
+/*
+ * Socket error listener
+ */
+const socketErrorListener = (event) => {
+  console.log('Socket not opened');
   if (event.target.readyState === 3) {
-    connected = false;
-
+    console.log('Socket not opened');
   }
-});
+}
 
+socket.addEventListener('open', socketOpenListener);
+socket.addEventListener('message', socketMessageListener);
+socket.addEventListener('error', socketErrorListener);
+socket.addEventListener('close', socketCloseListener);
+
+/*
+ * Ask websocket for a value
+ */
 function askValue(e){
 
   var payload = {
@@ -76,6 +78,9 @@ function askValue(e){
   return false;
 }
 
+/*
+ * Add a pair and pass it to the websocket
+ */
 function addPair(e){
   k = document.getElementById('key_to_add').value;
   v = document.getElementById('value_to_add').value;
