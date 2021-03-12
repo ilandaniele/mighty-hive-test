@@ -1,0 +1,30 @@
+  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mighty Hive Test</title>
+    <script src="main.js"></script>
+</head>
+<body>
+    <div class="main-text" style="font-size:20px; text-align:center; margin: 20px 0px 20px 0px;">Mighty Hive Test</div>
+    <div id="socket-state" style="text-align:center; margin-bottom:20px;">
+    </div>
+    <div class="column">
+      <form onsubmit="return addPair(this)" style="margin-bottom:30px; display:flex; flex-direction:column; align-items: center;">
+        <input type="text" id="key_to_add" placeholder="Insert a key" style="margin-bottom:10px;">
+        <input type="text" id="value_to_add" placeholder="Insert a value" style="margin-bottom:10px;">
+        <input type="submit" value="Add pair"  style="margin-bottom:10px;">
+        <div id="message-returned"></div>
+      </form>
+    </div>
+    <div class="column">
+      <form onsubmit="return askValue(this)" style="margin-bottom:30px; display:flex; flex-direction:column; align-items: center;">
+        <input type="text" id="key_to_obtain" placeholder="Insert a key" style="margin-bottom:10px;">
+        <input type="submit" value="Get value"  style="margin-bottom:10px;">
+        <div id="value-obtained"></div>
+      </form>
+    </div>
+</body>
+</html>
