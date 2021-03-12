@@ -1,8 +1,8 @@
 # Dependencies used
-Path
-Express
-Nodemon
-ws
+1. ws
+2. Express
+3. Nodemon
+4. Path
 
 # Installation
 Download the repository and run the command 'npm i' on console
