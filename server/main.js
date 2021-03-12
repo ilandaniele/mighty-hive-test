@@ -1,25 +1,36 @@
+/*
+* Const Variables
+*/
 const express = require('express');
 const app = express();
 const WebSocket = require('ws');
 const server = require('http').createServer(app);
 
+/*
+* Dictionary variable that will hold keys/values
+*/
 var dictionary = {};
 
-
+/*
+* Function that starts the websocket and add it's listeners
+*/
 function startWebSocket(){
 
   var WebSocketServer = new WebSocket.Server({ server:server });
 
   WebSocketServer.on('connection', function connection(websocket) {
   
-    console.log("A new client has connected!"); // connected from the terminal (chrome or whatever)
-    websocket.send(JSON.stringify('Welcome to Mighty Hive test')); // sends a message to the connected client
+    console.log("A new client has connected!"); 
+    websocket.send(JSON.stringify('Welcome to Mighty Hive test')); 
   
-    // If the client sends a message (asks for a key)
+    
+    /*
+    * Websocket function to receive messages
+    */
     websocket.on('message', function incoming(message) {
         var pair = JSON.parse(message);
-        // distinguish between two types of messages here
-        if(pair.value) {
+        
+        if(pair.value) { // distinguish between two types of messages here
           dictionary[pair.key] = pair.value;
           payload = {
             key: pair.key,
@@ -35,28 +46,38 @@ function startWebSocket(){
           }
         }
     });
-  
+    
+    /*
+    * Websocket function when open new socket
+    */
     websocket.on('open',function(){
       console.log('Socket opened');
       websocket.send('open');
     });
   
+    /*
+    * Websocket function when close socket
+    */
     websocket.on('close', function() {
       console.log('Socket disconnected');
       websocket.send('close');
       websocket = null;
-      //setTimeout(startWebSocket,60000);
     });
     
   });
 
+  /*
+  * APP route to disconnect websocket
+  */
   app.get('/disconnect', function(req,res) {
     WebSocketServer.close();
     res.send('Websocket disconnected');
   });
   
+  /*
+  * APP route to connect websocket
+  */
   app.get('/connect', function(req,res) {
-    //WebSocketServer = new WebSocket.Server({ server:server });
     startWebSocket();
     console.log('Socket connected');
     res.send('Socket connected');
@@ -64,12 +85,11 @@ function startWebSocket(){
 
 }
 
-app.use(express.static('public')); //part to make visible
+
 
 /*
-* APP routes
+* APP api get route
 */
-
 app.get('/api', function(req,res){
   var key = req.query.key;
   var value = dictionary[key];
@@ -80,6 +100,9 @@ app.get('/api', function(req,res){
   }
 
 });
+
+
+app.use(express.static('public')); //part to make visible
 
 startWebSocket();
 
