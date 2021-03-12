@@ -26,3 +26,4 @@ Several additions things that could have been done:
 Move the app routing to the client so if the server disconnects the client keeps running.
 Add a file reading/writing to read/write pairs in case the server shuts down.
 Fix the reconnection problem with the socket.
+Add to the GUI the possibility to make GET requests to the API
