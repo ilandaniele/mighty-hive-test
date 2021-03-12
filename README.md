@@ -1,3 +1,6 @@
+# Installation
+Download the repository and run the command 'npm i' on console
+
 # How to run
 To run the application we need to run 'npm start' command on console.
 Then, we open our navigator and in the URL tab we insert: 'localhost:8080'.
