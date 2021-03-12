@@ -54,7 +54,6 @@ const socketCloseListener = (event) => {
  * Socket error listener
  */
 const socketErrorListener = (event) => {
-  console.log('Socket not opened');
   if (event.target.readyState === 3) {
     console.log('Socket not opened');
   }
